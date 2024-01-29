@@ -1,0 +1,12 @@
+{
+  "name": "node4dev",
+  "version": "1.0.0",
+  "description": "NodeJs, Typescript, TDD, DDD, Clean Architecture e SOLID",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
