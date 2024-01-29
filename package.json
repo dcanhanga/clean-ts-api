@@ -1,5 +1,5 @@
 {
-  "name": "node4dev",
+  "name": "clean-ts-api",
   "version": "1.0.0",
   "description": "NodeJs, Typescript, TDD, DDD, Clean Architecture e SOLID",
   "main": "index.js",
@@ -8,5 +8,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "git-commit-msg-linter": "^5.0.6"
+  }
 }
