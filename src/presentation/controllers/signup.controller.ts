@@ -1,6 +1,7 @@
+import { type IHttpResponse, type IHttpRequest } from '../protocols/http';
+
 export class SignUpController {
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  handle(httpRequest: any): any {
+  handle(httpRequest: IHttpRequest<any>): IHttpResponse<any> | undefined {
     if (!httpRequest.body.name) {
       return {
         statusCode: 400,
