@@ -1,3 +1,4 @@
+import { type IAddAccount } from '../../domain/useCases/add-account.useCase';
 import { MissingParamError, InvalidParamError } from '../errors';
 import { badRequest, serverError } from '../helpers/http-helper';
 import {
@@ -8,10 +9,13 @@ import {
 } from '../protocols';
 
 export class SignUpController implements IController<any> {
-  constructor(private readonly emailValidator: IEmailValidator) {}
+  constructor(
+    private readonly emailValidator: IEmailValidator,
+    private readonly addAccount: IAddAccount
+  ) {}
 
   handle(httpRequest: IHttpRequest<any>): IHttpResponse<any> {
-    const { email, password, password_confirmation } = httpRequest?.body ?? {};
+    const { email, password, password_confirmation, name } = httpRequest?.body ?? {};
 
     try {
       const requiredFields = ['name', 'email', 'password', 'password_confirmation'];
@@ -29,6 +33,11 @@ export class SignUpController implements IController<any> {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'));
       }
+      this.addAccount.add({
+        name,
+        email,
+        password
+      });
       return {
         statusCode: 200,
         body: { message: 'User created successfully' }
