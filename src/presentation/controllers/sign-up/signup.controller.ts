@@ -15,8 +15,6 @@ export class SignUpController implements IController<any> {
   ) {}
 
   handle(httpRequest: IHttpRequest<any>): IHttpResponse<any> {
-    const { email, password, password_confirmation, name } = httpRequest?.body ?? {};
-
     try {
       const requiredFields = ['name', 'email', 'password', 'password_confirmation'];
       for (const field of requiredFields) {
@@ -24,6 +22,7 @@ export class SignUpController implements IController<any> {
           return badRequest(new MissingParamError(field));
         }
       }
+      const { email, password, password_confirmation, name } = httpRequest?.body ?? {};
       if (password !== password_confirmation) {
         return badRequest(new InvalidParamError('password_confirmation'));
       }
@@ -33,14 +32,15 @@ export class SignUpController implements IController<any> {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'));
       }
-      this.addAccount.add({
+      const account = this.addAccount.add({
         name,
         email,
         password
       });
+
       return {
         statusCode: 200,
-        body: { message: 'User created successfully' }
+        body: account
       };
     } catch (error) {
       return serverError();
