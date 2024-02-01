@@ -11,6 +11,8 @@ export class SignUpController implements IController<any> {
   constructor(private readonly emailValidator: IEmailValidator) {}
 
   handle(httpRequest: IHttpRequest<any>): IHttpResponse<any> {
+    const { email, password, password_confirmation } = httpRequest?.body ?? {};
+
     try {
       const requiredFields = ['name', 'email', 'password', 'password_confirmation'];
       for (const field of requiredFields) {
@@ -18,12 +20,11 @@ export class SignUpController implements IController<any> {
           return badRequest(new MissingParamError(field));
         }
       }
-      if (httpRequest.body.password !== httpRequest.body.password_confirmation) {
+      if (password !== password_confirmation) {
         return badRequest(new InvalidParamError('password_confirmation'));
       }
-      const email: string =
-        typeof httpRequest?.body.email === 'string' ? httpRequest.body.email : '';
-      const isValid = this.emailValidator.isValid(email);
+      const emailCheck: string = typeof email === 'string' ? email : '';
+      const isValid = this.emailValidator.isValid(emailCheck);
 
       if (!isValid) {
         return badRequest(new InvalidParamError('email'));
