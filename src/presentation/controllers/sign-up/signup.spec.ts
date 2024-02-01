@@ -1,8 +1,11 @@
+import {
+  type IAddAccountModel,
+  type IAccountModel,
+  type IAddAccount,
+  type IEmailValidator
+} from './sign-up-protocols';
 import { SignUpController } from './signup.controller';
-import { type IAccountModel } from '../../domain/models/account';
-import { type IAddAccount, type IAddAccountModel } from '../../domain/useCases/add-account.useCase';
-import { InvalidParamError, MissingParamError, ServerError } from '../errors';
-import { type IEmailValidator } from '../protocols';
+import { InvalidParamError, MissingParamError, ServerError } from '../../errors';
 
 const makeAddAccount = (): IAddAccount => {
   class AddAccountStub implements IAddAccount {
