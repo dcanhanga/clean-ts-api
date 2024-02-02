@@ -6,7 +6,7 @@ import {
   type IAddAccount
 } from './sign-up-protocols';
 import { MissingParamError, InvalidParamError } from '../../errors';
-import { badRequest, serverError } from '../../helpers/http-helper';
+import { badRequest, serverError, ok } from '../../helpers/http-helper';
 
 export class SignUpController implements IController<any> {
   constructor(
@@ -38,10 +38,7 @@ export class SignUpController implements IController<any> {
         password
       });
 
-      return {
-        statusCode: 200,
-        body: account
-      };
+      return ok(account);
     } catch (error) {
       return serverError();
     }
