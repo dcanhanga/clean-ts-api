@@ -40,6 +40,8 @@ export class SignUpController implements IController<any> {
 
       return ok(account);
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
       return serverError();
     }
   }
