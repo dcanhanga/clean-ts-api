@@ -1,8 +1,9 @@
 import { DbAddAccount } from './db-add-account';
-import { type ICrypto } from '../../protocols/encrypt';
+import { type IEncryptor } from '../../protocols/encrypt';
+
 interface ISuTypes {
   sut: DbAddAccount;
-  encryptStub: ICrypto;
+  encryptStub: IEncryptor;
 }
 const makeSut = (): ISuTypes => {
   class EncryptStub {

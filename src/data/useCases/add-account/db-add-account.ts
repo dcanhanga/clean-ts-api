@@ -3,12 +3,12 @@ import {
   type IAddAccount,
   type IAddAccountModel
 } from '../../../domain/useCases/add-account.useCase';
-import { type ICrypto } from '../../protocols/encrypt';
+import { type IEncryptor } from '../../protocols/encrypt';
 
 export class DbAddAccount implements IAddAccount {
-  constructor(private readonly crypto: ICrypto) {}
+  constructor(private readonly encryptor: IEncryptor) {}
   async add(account: IAddAccountModel): Promise<IAccountModel> {
-    await this.crypto.encrypt(account.password);
+    await this.encryptor.encrypt(account.password);
     return await Promise.resolve({ id: 'string', name: 'string', email: 'string' });
   }
 }
