@@ -1,7 +1,7 @@
-export interface IHttpRequest<T> {
-  body: T;
+export interface IHttpRequest {
+  body?: any;
 }
-export interface IHttpResponse<T> {
+export interface IHttpResponse {
+  body: any;
   statusCode: number;
-  body: T;
 }
