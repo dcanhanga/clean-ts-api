@@ -4,3 +4,8 @@ export const badRequest = (error: Error): IHttpResponse => ({
   body: error,
   statusCode: 400
 });
+
+export const serverError = (error: Error): IHttpResponse => ({
+  body: error,
+  statusCode: 500
+});

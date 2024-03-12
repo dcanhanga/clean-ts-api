@@ -1,6 +1,7 @@
 import { InvalidParamError } from '../errors/invalid-param-error';
 import { MissingParamError } from '../errors/missing-param-error';
-import { badRequest } from '../helpers/http';
+import { ServerError } from '../errors/server-error';
+import { badRequest, serverError } from '../helpers/http';
 import { type IController } from '../protocols/controller';
 import { type IEmailValidator } from '../protocols/email-validator';
 import { type IHttpResponse, type IHttpRequest } from '../protocols/http';
@@ -26,12 +27,12 @@ export class SignUpController implements IController {
       if (error instanceof MissingParamError || error instanceof InvalidParamError) {
         return badRequest(error);
       }
+      return serverError(new ServerError());
     }
   }
 
   private validateRequiredFields(httpRequest: IHttpRequest): void {
     const requiredFields: Field[] = ['name', 'email', 'password', 'passwordConfirmation'];
-
     for (const field of requiredFields) {
       if (httpRequest?.body[field] === undefined || httpRequest?.body[field] === null) {
         throw new MissingParamError(field);
