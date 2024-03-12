@@ -24,6 +24,10 @@ export class SignUpController implements IController {
       if (!isValidEmail) {
         throw new InvalidParamError('email');
       }
+      const passwordMatch = httpRequest.body.password === httpRequest.body.passwordConfirmation;
+      if (!passwordMatch) {
+        throw new InvalidParamError('Password not match');
+      }
     } catch (error) {
       if (error instanceof MissingParamError || error instanceof InvalidParamError) {
         return badRequest(error);
