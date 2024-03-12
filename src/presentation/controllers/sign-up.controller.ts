@@ -1,10 +1,11 @@
-import { InvalidParamError } from '../errors/invalid-param-error';
-import { MissingParamError } from '../errors/missing-param-error';
-import { ServerError } from '../errors/server-error';
-import { badRequest, serverError } from '../helpers/http';
-import { type IController } from '../protocols/controller';
-import { type IEmailValidator } from '../protocols/email-validator';
-import { type IHttpResponse, type IHttpRequest } from '../protocols/http';
+import { InvalidParamError, MissingParamError, ServerError } from '../errors';
+import { badRequest, serverError } from '../helpers';
+import {
+  type IController,
+  type IEmailValidator,
+  type IHttpRequest,
+  type IHttpResponse
+} from '../protocols';
 
 export interface IRequest {
   fullName: string;
@@ -12,7 +13,7 @@ export interface IRequest {
   password: string;
   passwordConfirmation: string;
 }
-
+type Field = 'name' | 'email' | 'password' | 'passwordConfirmation';
 export class SignUpController implements IController {
   constructor(private readonly emailValidator: IEmailValidator) {}
   async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
@@ -40,4 +41,3 @@ export class SignUpController implements IController {
     }
   }
 }
-export type Field = 'name' | 'email' | 'password' | 'passwordConfirmation';

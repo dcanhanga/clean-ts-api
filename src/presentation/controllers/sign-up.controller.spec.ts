@@ -1,8 +1,7 @@
+import { InvalidParamError, MissingParamError, ServerError } from '../errors';
+import { type IEmailValidator } from '../protocols';
 import { SignUpController } from './sign-up.controller';
-import { MissingParamError } from '../errors/missing-param-error';
-import { InvalidParamError } from '../errors/invalid-param-error';
-import { type IEmailValidator } from '../protocols/email-validator';
-import { ServerError } from '../errors/server-error';
+
 interface ISutType {
   sut: SignUpController;
   emailValidatorStub: IEmailValidator;
@@ -51,7 +50,7 @@ describe('SignUp Controller', () => {
       expect(httpResponse.body).toEqual(new MissingParamError('email'));
     });
     test('Should return 400 if no password is provided', async () => {
-      const sut = new SignUpController();
+      const { sut } = makeSut();
       const httpRequest = {
         body: {
           name: 'any_name',
