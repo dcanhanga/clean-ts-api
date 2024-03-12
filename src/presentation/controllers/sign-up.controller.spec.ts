@@ -1,3 +1,5 @@
+import { type IAccountModel } from '../../domain/model';
+import { type IAddAccountModel, type IAddAccount } from '../../domain/useCases';
 import { InvalidParamError, MissingParamError, ServerError } from '../errors';
 import { type IEmailValidator } from '../protocols';
 import { SignUpController } from './sign-up.controller';
@@ -5,8 +7,22 @@ import { SignUpController } from './sign-up.controller';
 interface ISutType {
   sut: SignUpController;
   emailValidatorStub: IEmailValidator;
+  addAccountStub: IAddAccount;
 }
-
+const makeAddAccount = (): IAddAccount => {
+  class AddAccountStub implements IAddAccount {
+    add(account: IAddAccountModel): IAccountModel {
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email@email.com',
+        password: 'valid_password'
+      };
+      return fakeAccount;
+    }
+  }
+  return new AddAccountStub();
+};
 const makeEmailValidator = (): IEmailValidator => {
   class EmailValidator {
     isValid(email: string): boolean {
@@ -17,8 +33,9 @@ const makeEmailValidator = (): IEmailValidator => {
 };
 const makeSut = (): ISutType => {
   const emailValidatorStub = makeEmailValidator();
-  const sut = new SignUpController(emailValidatorStub);
-  return { sut, emailValidatorStub };
+  const addAccountStub = makeAddAccount();
+  const sut = new SignUpController(emailValidatorStub, addAccountStub);
+  return { sut, emailValidatorStub, addAccountStub };
 };
 
 describe('SignUp Controller', () => {
@@ -118,7 +135,9 @@ describe('SignUp Controller', () => {
       };
       const httpResponse = await sut.handle(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      expect(httpResponse.body).toEqual(new InvalidParamError('Password not match'));
+      expect(httpResponse.body).toEqual(
+        new InvalidParamError('Password and password confirmation do not match')
+      );
     });
   });
   describe('Server Error', () => {
@@ -138,6 +157,24 @@ describe('SignUp Controller', () => {
       const httpResponse = await sut.handle(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
       expect(httpResponse.body).toEqual(new ServerError());
+    });
+  });
+  test('Should call AddAccount with correct values', async () => {
+    const { sut, addAccountStub } = makeSut();
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'valid_email@email.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    };
+    const addSpy = jest.spyOn(addAccountStub, 'add');
+    await sut.handle(httpRequest);
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'valid_email@email.com',
+      password: 'any_password'
     });
   });
 });
