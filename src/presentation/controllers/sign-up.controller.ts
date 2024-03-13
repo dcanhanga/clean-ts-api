@@ -1,6 +1,6 @@
 import { type IAddAccount } from '../../domain/useCases';
 import { InvalidParamError, MissingParamError, ServerError } from '../errors';
-import { badRequest, serverError } from '../helpers';
+import { badRequest, ok, serverError } from '../helpers';
 import {
   type IController,
   type IEmailValidator,
@@ -36,11 +36,12 @@ export class SignUpController implements IController {
       if (password !== passwordConfirmation) {
         throw new InvalidParamError('Password and password confirmation do not match');
       }
-      await this.addAccount.add({
+      const account = await this.addAccount.add({
         password,
         email,
         name
       });
+      return ok(account);
     } catch (error) {
       if (error instanceof MissingParamError || error instanceof InvalidParamError) {
         return badRequest(error);
