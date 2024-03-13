@@ -36,7 +36,7 @@ export class SignUpController implements IController {
       if (password !== passwordConfirmation) {
         throw new InvalidParamError('Password and password confirmation do not match');
       }
-      this.addAccount.add({
+      await this.addAccount.add({
         password,
         email,
         name
