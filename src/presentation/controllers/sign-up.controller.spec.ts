@@ -11,14 +11,14 @@ interface ISutType {
 }
 const makeAddAccount = (): IAddAccount => {
   class AddAccountStub implements IAddAccount {
-    add(account: IAddAccountModel): IAccountModel {
+    async add(account: IAddAccountModel): Promise<IAccountModel> {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valid_email@email.com',
         password: 'valid_password'
       };
-      return fakeAccount;
+      return await Promise.resolve(fakeAccount);
     }
   }
   return new AddAccountStub();
@@ -158,7 +158,25 @@ describe('SignUp Controller', () => {
       expect(httpResponse.statusCode).toBe(500);
       expect(httpResponse.body).toEqual(new ServerError());
     });
+    test('Should return 500 if email validator Throws', async () => {
+      const { sut, addAccountStub } = makeSut();
+      const httpRequest = {
+        body: {
+          name: 'any_name',
+          email: 'valid_email@email.com',
+          password: 'any_password',
+          passwordConfirmation: 'any_password'
+        }
+      };
+      jest
+        .spyOn(addAccountStub, 'add')
+        .mockImplementationOnce(async () => await Promise.reject(new Error()));
+      const httpResponse = await sut.handle(httpRequest);
+      expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new ServerError());
+    });
   });
+
   test('Should call AddAccount with correct values', async () => {
     const { sut, addAccountStub } = makeSut();
     const httpRequest = {
