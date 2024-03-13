@@ -1,6 +1,9 @@
 import { EmailValidatorAdapter } from './email-validator-adapter';
 import validator from 'validator';
 describe('EmailValidator Adapter', () => {
+  jest.mock('validator', () => {
+    return true;
+  });
   test('Should return false if validator reruns false', () => {
     const sut = new EmailValidatorAdapter();
     jest.spyOn(validator, 'isEmail').mockReturnValueOnce(false);
