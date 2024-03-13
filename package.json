@@ -23,6 +23,7 @@
   "devDependencies": {
     "@swc/core": "1.4.2",
     "@swc/jest": "0.2.36",
+    "@types/bcrypt": "5.0.2",
     "@types/jest": "29.5.12",
     "@types/lint-staged": "13.3.0",
     "@types/node": "20.11.24",
@@ -44,7 +45,7 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
-    "@types/bcrypt": "5.0.2",
+    "bcrypt": "5.1.1",
     "validator": "13.11.0"
   }
 }
