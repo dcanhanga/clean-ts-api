@@ -1,6 +1,6 @@
 import { type IAccountModel } from '../../../domain/model';
 import { type IAddAccountModel, type IAddAccount } from '../../../domain/useCases/add-account';
-import { type IEncryptor } from '../../protocols/encryptor';
+import { type IEncryptor } from '../../protocols';
 export class DbAddAccount implements IAddAccount {
   constructor(private readonly encryptor: IEncryptor) {}
   async add(account: IAddAccountModel): Promise<IAccountModel> {
