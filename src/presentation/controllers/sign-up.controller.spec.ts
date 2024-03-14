@@ -16,7 +16,7 @@ const makeAddAccount = (): IAddAccount => {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valid_email@email.com',
-        password: 'passwordHashed'
+        password: 'password'
       };
       return await Promise.resolve(fakeAccount);
     }
@@ -211,7 +211,7 @@ describe('SignUp Controller', () => {
       id: 'valid_id',
       name: 'valid_name',
       email: 'valid_email@email.com',
-      password: 'passwordHashed'
+      password: 'password'
     });
   });
 });
