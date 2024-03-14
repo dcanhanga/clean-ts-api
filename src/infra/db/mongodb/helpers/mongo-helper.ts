@@ -1,6 +1,5 @@
 import { type Collection, MongoClient, type ObjectId } from 'mongodb';
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export abstract class MongoHelper {
   private static client: null | MongoClient = null;
 
