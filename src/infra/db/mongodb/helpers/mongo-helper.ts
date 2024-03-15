@@ -1,29 +1,31 @@
 import { type Collection, MongoClient, type ObjectId } from 'mongodb';
 
 export abstract class MongoHelper {
-  private static client: null | MongoClient = null;
+  private static client: MongoClient | null = null;
 
-  protected constructor() {}
+  private constructor() {}
 
-  static async connect(url: string): Promise<void> {
-    this.client = await MongoClient.connect(url);
-  }
-
-  static async disconnect(): Promise<void> {
-    if (this.client !== null) {
-      await this.client.close();
-      this.client = null;
+  public static async connect(url: string): Promise<void> {
+    if (!MongoHelper.client) {
+      MongoHelper.client = await MongoClient.connect(url);
     }
   }
 
-  static getCollection(name: string): Collection {
-    if (this.client === null) {
-      throw new Error('Não conectado ao banco de dados.');
+  public static async disconnect(): Promise<void> {
+    if (MongoHelper.client !== null) {
+      await MongoHelper.client.close();
+      MongoHelper.client = null;
     }
-    return this.client.db().collection(name);
   }
 
-  static map<T>(collection: unknown): T {
+  public static getCollection(name: string): Collection {
+    if (MongoHelper.client === null) {
+      throw new Error('Not connected to the database.');
+    }
+    return MongoHelper.client.db().collection(name);
+  }
+
+  public static map<T>(collection: unknown): T {
     const isKeyValueObject =
       collection !== null &&
       typeof collection === 'object' &&
@@ -33,6 +35,6 @@ export abstract class MongoHelper {
       const { _id, ...collectionWithoutId } = collection as { _id: ObjectId };
       return { ...collectionWithoutId, id: _id.toString() } as unknown as T;
     }
-    throw new Error('A coleção fornecida não é um objeto válido.');
+    throw new Error('The provided collection is not a valid object.');
   }
 }

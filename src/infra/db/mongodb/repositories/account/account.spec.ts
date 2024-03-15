@@ -1,5 +1,5 @@
-import { type IAddAccountRepository } from '../../../../data/protocols';
-import { MongoHelper } from '../helpers/mongo-helper';
+import { type IAddAccountRepository } from '../../../../../data/protocols';
+import { MongoHelper } from '../../helpers/mongo-helper';
 import { AccountMongoRepository } from './account.repository';
 const makeSut = (): IAddAccountRepository => {
   return new AccountMongoRepository();
