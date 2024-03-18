@@ -1,28 +1,57 @@
 import { type Collection, MongoClient, type ObjectId } from 'mongodb';
-
+/**
+ * Utility class to provide access to the MongoDB database.
+ * Maintains a single connection to MongoDB across the entire application.
+ */
 export abstract class MongoHelper {
-  private static client: MongoClient | null = null;
-
+  private static url: string | null;
+  private static clientPromise: Promise<MongoClient> | null = null;
+  /**
+   * Private constructor to prevent class instantiation.
+   */
   private constructor() {}
+  /**
+   * Connects to MongoDB.
+   *
+   * @param url Connection URL
+   */
+  private static async ensureClient(): Promise<MongoClient> {
+    if (!MongoHelper.clientPromise) {
+      if (!MongoHelper.url) {
+        throw new Error('URL do MongoDB não definida');
+      }
+      MongoHelper.clientPromise = MongoClient.connect(MongoHelper.url);
+    }
+    return await MongoHelper.clientPromise;
+  }
 
   public static async connect(url: string): Promise<void> {
-    if (!MongoHelper.client) {
-      MongoHelper.client = await MongoClient.connect(url);
-    }
+    MongoHelper.url = url;
+    await MongoHelper.ensureClient();
   }
 
   public static async disconnect(): Promise<void> {
-    if (MongoHelper.client !== null) {
-      await MongoHelper.client.close();
-      MongoHelper.client = null;
+    if (MongoHelper.clientPromise) {
+      const client = await MongoHelper.clientPromise;
+      await client.close();
+      MongoHelper.clientPromise = null;
     }
   }
 
-  public static getCollection(name: string): Collection {
-    if (MongoHelper.client === null) {
-      throw new Error('Not connected to the database.');
+  /**
+   * Gets a MongoDB collection by name.
+   *
+   * @param name Collection name
+   * @returns Collection or an empty collection if an error occurs
+   */
+  public static async getCollection(name: string): Promise<Collection> {
+    try {
+      const client = await MongoHelper.ensureClient();
+      return client.db().collection(name);
+    } catch (err) {
+      console.error('Erro ao obter coleção:', err);
+      return await Promise.reject(err);
     }
-    return MongoHelper.client.db().collection(name);
   }
 
   public static map<T>(collection: unknown): T {
