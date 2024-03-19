@@ -1,5 +1,5 @@
 import { type IAddAccount } from '../../domain/useCases';
-import { InvalidParamError, MissingParamError, ServerError } from '../errors';
+import { InvalidParamError, MissingParamError } from '../errors';
 import { badRequest, ok, serverError } from '../helpers';
 import {
   type IController,
@@ -46,7 +46,7 @@ export class SignUpController implements IController {
       if (error instanceof MissingParamError || error instanceof InvalidParamError) {
         return badRequest(error);
       }
-      return serverError(new ServerError());
+      return serverError(error as Error);
     }
   }
 
