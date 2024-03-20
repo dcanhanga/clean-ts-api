@@ -1,4 +1,3 @@
-import { SignUpController } from './../../presentation/controllers/sign-up.controller';
 import { DbAddAccount } from '../../data/useCases/add-account/db-add-account.useCase';
 import { EmailValidatorAdapter } from '../../utils/email-validator.adapter';
 import { BcryptAdapter } from '../../infra/cryptography/bcrypt.adapter';
@@ -6,6 +5,7 @@ import { AccountMongoRepository } from '../../infra/db/mongodb/repositories/acco
 import { LogMongoRepository } from '../../infra/db/mongodb/repositories/log/log-error.repository';
 import { LogControllerDecorator } from '../decorators/log.decorator';
 import { type IController } from '../../presentation/protocols';
+import { SignUpController } from '../../presentation/controllers/sign-up/sign-up.controller';
 
 export const makeSignUpController = (): IController => {
   const saltOrRounds = 12;

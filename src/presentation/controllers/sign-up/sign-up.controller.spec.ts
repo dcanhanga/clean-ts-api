@@ -139,7 +139,7 @@ describe('SignUp Controller', () => {
       const httpResponse = await sut.handle(httpRequest);
       expect(httpResponse).toEqual(serverError(new ServerError()));
     });
-    test('Should return 500 if email validator Throws', async () => {
+    test('Should return 500 if AddAccount Throws', async () => {
       const { sut, addAccountStub } = makeSut();
       const httpRequest = makeFakeRequest();
       jest
