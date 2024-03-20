@@ -1,3 +1,4 @@
+import { type IAuthentication } from '../../../domain/useCases/authentication.useCase';
 import { InvalidParamError, MissingParamError } from '../../errors';
 import { badRequest, serverError } from '../../helpers';
 import {
@@ -13,7 +14,10 @@ interface ILoginRequest {
 
 type Field = keyof ILoginRequest;
 export class LoginController implements IController {
-  constructor(private readonly emailValidator: IEmailValidator) {}
+  constructor(
+    private readonly emailValidator: IEmailValidator,
+    private readonly authentication: IAuthentication
+  ) {}
 
   async handle(request: IHttpRequest): Promise<IHttpResponse> {
     try {
@@ -22,13 +26,13 @@ export class LoginController implements IController {
       if (!this.emailValidator.isValid(email as string)) {
         throw new InvalidParamError('email');
       }
+      await this.authentication.auth(request.body as ILoginRequest);
     } catch (error) {
       if (error instanceof MissingParamError || error instanceof InvalidParamError) {
         return badRequest(error);
       }
       return serverError(error as Error);
     }
-    return await Promise.resolve(badRequest(new MissingParamError('email')));
   }
 
   private validateRequiredFields(httpRequest: IHttpRequest): void {
