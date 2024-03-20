@@ -1,7 +1,7 @@
 import { type IAuthentication } from '../../../domain/useCases/authentication.useCase';
 import { InvalidParamError, MissingParamError } from '../../errors';
 import { UnauthorizedError } from '../../errors/unauthorized-error';
-import { badRequest, serverError, unauthorized } from '../../helpers';
+import { badRequest, ok, serverError, unauthorized } from '../../helpers';
 import {
   type IHttpRequest,
   type IHttpResponse,
@@ -31,6 +31,7 @@ export class LoginController implements IController {
       if (!accessToken) {
         throw new UnauthorizedError();
       }
+      return ok({ accessToken });
     } catch (error) {
       if (error instanceof MissingParamError || error instanceof InvalidParamError) {
         return badRequest(error);
