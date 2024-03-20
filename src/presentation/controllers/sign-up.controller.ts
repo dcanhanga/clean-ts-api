@@ -25,10 +25,8 @@ export class SignUpController implements IController {
 
   async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
     try {
-      const { name, email, password, passwordConfirmation } = httpRequest.body;
-
       this.validateRequiredFields(httpRequest);
-
+      const { name, email, password, passwordConfirmation } = httpRequest.body;
       if (!this.emailValidator.isValid(email as string)) {
         throw new InvalidParamError('email');
       }
