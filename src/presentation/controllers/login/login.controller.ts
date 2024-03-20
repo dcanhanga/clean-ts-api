@@ -1,6 +1,7 @@
 import { type IAuthentication } from '../../../domain/useCases/authentication.useCase';
 import { InvalidParamError, MissingParamError } from '../../errors';
-import { badRequest, serverError } from '../../helpers';
+import { UnauthorizedError } from '../../errors/unauthorized-error';
+import { badRequest, serverError, unauthorized } from '../../helpers';
 import {
   type IHttpRequest,
   type IHttpResponse,
@@ -26,10 +27,16 @@ export class LoginController implements IController {
       if (!this.emailValidator.isValid(email as string)) {
         throw new InvalidParamError('email');
       }
-      await this.authentication.auth(request.body as ILoginRequest);
+      const accessToken = await this.authentication.auth(request.body as ILoginRequest);
+      if (!accessToken) {
+        throw new UnauthorizedError();
+      }
     } catch (error) {
       if (error instanceof MissingParamError || error instanceof InvalidParamError) {
         return badRequest(error);
+      }
+      if (error instanceof UnauthorizedError) {
+        return unauthorized(error);
       }
       return serverError(error as Error);
     }

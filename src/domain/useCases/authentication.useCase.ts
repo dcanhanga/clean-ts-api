@@ -3,5 +3,5 @@ export interface ICredentialUser {
   password: string;
 }
 export interface IAuthentication {
-  auth: (data: ICredentialUser) => Promise<string>;
+  auth: (data: ICredentialUser) => Promise<string | null>;
 }
