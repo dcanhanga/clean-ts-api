@@ -4,7 +4,7 @@ import {
 } from '../../../domain/useCases/authentication.useCase';
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors';
 import { UnauthorizedError } from '../../errors/unauthorized-error';
-import { badRequest, serverError, unauthorized } from '../../helpers';
+import { badRequest, ok, serverError, unauthorized } from '../../helpers';
 import { type IEmailValidator, type IController } from '../../protocols';
 import { LoginController } from './login.controller';
 interface ISutType {
@@ -112,5 +112,12 @@ describe('Login Controller', () => {
       .mockImplementationOnce(async () => await Promise.reject(new Error()));
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse).toEqual(serverError(new ServerError()));
+  });
+  test('Should return 200 if valid credentials are provided', async () => {
+    const { sut } = makeSut();
+    const httpRequest = makeRequest();
+
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }));
   });
 });
