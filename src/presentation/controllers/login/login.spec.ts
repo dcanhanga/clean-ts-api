@@ -3,7 +3,8 @@ import {
   type ICredentialUser
 } from '../../../domain/useCases/authentication.useCase';
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors';
-import { badRequest, serverError } from '../../helpers';
+import { UnauthorizedError } from '../../errors/unauthorized-error';
+import { badRequest, serverError, unauthorized } from '../../helpers';
 import { type IEmailValidator, type IController } from '../../protocols';
 import { LoginController } from './login.controller';
 interface ISutType {
@@ -95,5 +96,12 @@ describe('Login Controller', () => {
     const httpRequest = makeRequest();
     await sut.handle(httpRequest);
     expect(authSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
+  test('Should return 401 if invalid credentials ate provided', async () => {
+    const { sut, authenticationStub } = makeSut();
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(Promise.resolve(null));
+    const httpRequest = makeRequest();
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse).toEqual(unauthorized(new UnauthorizedError()));
   });
 });
