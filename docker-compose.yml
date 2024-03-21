@@ -1,0 +1,15 @@
+version: '2.3'
+
+services:
+
+  mongo:
+    image: 'mongo'
+    restart: always
+    ports:
+    - '27018:27017'  # Altere a porta para evitar conflitos com outras instâncias do MongoDB
+    volumes:
+    - mongodb_data:/clean-api/mongodb
+ 
+volumes:
+  mongodb_data:
+
