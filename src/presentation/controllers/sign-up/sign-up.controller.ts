@@ -1,12 +1,7 @@
 import { type IAddAccount } from '../../../domain/useCases';
 import { InvalidParamError } from '../../errors';
 import { badRequest, type IValidation, ok, serverError } from '../../helpers';
-import {
-  type IController,
-  type IEmailValidator,
-  type IHttpResponse,
-  type IHttpRequest
-} from '../../protocols';
+import { type IController, type IHttpResponse, type IHttpRequest } from '../../protocols';
 
 // interface ISignUpRequest {
 //   name: string;
@@ -19,7 +14,6 @@ import {
 
 export class SignUpController implements IController {
   constructor(
-    private readonly emailValidator: IEmailValidator,
     private readonly addAccount: IAddAccount,
     private readonly validation: IValidation
   ) {}
@@ -30,15 +24,8 @@ export class SignUpController implements IController {
       if (error) {
         return badRequest(error);
       }
+      const { name, email, password } = httpRequest.body;
 
-      const { name, email, password, passwordConfirmation } = httpRequest.body;
-      if (!this.emailValidator.isValid(email as string)) {
-        throw new InvalidParamError('email');
-      }
-
-      if (password !== passwordConfirmation) {
-        throw new InvalidParamError('Password and password confirmation do not match');
-      }
       const account = await this.addAccount.add({
         password,
         email,

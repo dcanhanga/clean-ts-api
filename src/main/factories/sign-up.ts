@@ -1,5 +1,4 @@
 import { DbAddAccount } from '../../data/useCases/add-account/db-add-account.useCase';
-import { EmailValidatorAdapter } from '../../utils/email-validator.adapter';
 import { BcryptAdapter } from '../../infra/cryptography/bcrypt.adapter';
 import { AccountMongoRepository } from '../../infra/db/mongodb/repositories/account/account.repository';
 import { LogMongoRepository } from '../../infra/db/mongodb/repositories/log/log-error.repository';
@@ -10,16 +9,12 @@ import { makeSignUpValidation } from './sign-up-validation';
 
 export const makeSignUpController = (): IController => {
   const saltOrRounds = 12;
-  const emailValidatorAdapter = new EmailValidatorAdapter();
+
   const bcryptAdapter = new BcryptAdapter(saltOrRounds);
   const addAccountRepository = new AccountMongoRepository();
   const logMongoRepository = new LogMongoRepository();
   const dbAddAccount = new DbAddAccount(bcryptAdapter, addAccountRepository);
   const validationComposite = makeSignUpValidation();
-  const signUpController = new SignUpController(
-    emailValidatorAdapter,
-    dbAddAccount,
-    validationComposite
-  );
+  const signUpController = new SignUpController(dbAddAccount, validationComposite);
   return new LogControllerDecorator(signUpController, logMongoRepository);
 };
