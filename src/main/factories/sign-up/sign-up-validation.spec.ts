@@ -1,11 +1,11 @@
-import { type IValidation } from '../../presentation/helpers';
-import { PasswordMatchValidation } from '../../presentation/helpers/validators/password-match-validation';
-import { EmailValidation } from '../../presentation/helpers/validators/email-validation';
-import { RequiredFieldsValidation } from '../../presentation/helpers/validators/required-fields-validation';
-import { ValidationComposite } from '../../presentation/helpers/validators/validation-composite';
-import { type IEmailValidator } from '../../presentation/protocols';
+import { type IValidation } from '../../../presentation/helpers';
+import { PasswordMatchValidation } from '../../../presentation/helpers/validators/password-match-validation';
+import { EmailValidation } from '../../../presentation/helpers/validators/email-validation';
+import { RequiredFieldsValidation } from '../../../presentation/helpers/validators/required-fields-validation';
+import { ValidationComposite } from '../../../presentation/helpers/validators/validation-composite';
+import { type IEmailValidator } from '../../../presentation/protocols';
 import { makeSignUpValidation } from './sign-up-validation';
-jest.mock('../../presentation/helpers/validators/validation-composite');
+jest.mock('../../../presentation/helpers/validators/validation-composite');
 const makeEmailValidator = (): IEmailValidator => {
   class EmailValidator {
     isValid(email: string): boolean {

@@ -6,7 +6,6 @@ import { SignUpController } from './sign-up.controller';
 import { ok, badRequest, serverError, type IValidation } from '../../helpers/';
 interface ISutType {
   sut: SignUpController;
-
   addAccountStub: IAddAccount;
   validationStub: IValidation;
 }
