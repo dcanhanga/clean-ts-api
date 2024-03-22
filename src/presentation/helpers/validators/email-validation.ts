@@ -1,4 +1,4 @@
-import { type IValidation } from './validation';
+import { type IValidation } from '../../protocols/validation';
 import { InvalidParamError } from '../../errors';
 import { type IEmailValidator } from '../../protocols';
 export class EmailValidation implements IValidation {
