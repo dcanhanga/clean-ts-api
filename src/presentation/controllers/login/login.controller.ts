@@ -1,6 +1,5 @@
 import { type IAuthentication } from '../../../domain/useCases/authentication.useCase';
-import { InvalidParamError, MissingParamError } from '../../errors';
-import { UnauthorizedError } from '../../errors/unauthorized-error';
+import { InvalidParamError, MissingParamError, UnauthorizedError } from '../../errors';
 import { badRequest, type IValidation, ok, serverError, unauthorized } from '../../helpers';
 import { type IHttpRequest, type IHttpResponse, type IController } from '../../protocols';
 interface ILoginRequest {
@@ -19,7 +18,7 @@ export class LoginController implements IController {
     try {
       const error = this.validation.validate(httpRequest.body);
       if (error) {
-        return badRequest(error);
+        throw error;
       }
 
       const accessToken = await this.authentication.auth(httpRequest.body as ILoginRequest);
