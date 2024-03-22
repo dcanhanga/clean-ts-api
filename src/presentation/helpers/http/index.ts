@@ -1,5 +1,5 @@
-import { ServerError } from '../errors';
-import { type IHttpResponse } from '../protocols/http';
+import { ServerError } from '../../errors';
+import { type IHttpResponse } from '../../protocols/http';
 
 export const badRequest = (error: Error): IHttpResponse => ({
   body: error,

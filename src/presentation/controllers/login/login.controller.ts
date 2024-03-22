@@ -1,33 +1,28 @@
 import { type IAuthentication } from '../../../domain/useCases/authentication.useCase';
 import { InvalidParamError, MissingParamError } from '../../errors';
 import { UnauthorizedError } from '../../errors/unauthorized-error';
-import { badRequest, ok, serverError, unauthorized } from '../../helpers';
-import {
-  type IHttpRequest,
-  type IHttpResponse,
-  type IController,
-  type IEmailValidator
-} from '../../protocols';
+import { badRequest, type IValidation, ok, serverError, unauthorized } from '../../helpers';
+import { type IHttpRequest, type IHttpResponse, type IController } from '../../protocols';
 interface ILoginRequest {
   email: string;
   password: string;
 }
 
-type Field = keyof ILoginRequest;
+// type Field = keyof ILoginRequest;
 export class LoginController implements IController {
   constructor(
-    private readonly emailValidator: IEmailValidator,
-    private readonly authentication: IAuthentication
+    private readonly authentication: IAuthentication,
+    private readonly validation: IValidation
   ) {}
 
-  async handle(request: IHttpRequest): Promise<IHttpResponse> {
+  async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
     try {
-      this.validateRequiredFields(request);
-      const { email } = request.body;
-      if (!this.emailValidator.isValid(email as string)) {
-        throw new InvalidParamError('email');
+      const error = this.validation.validate(httpRequest.body);
+      if (error) {
+        return badRequest(error);
       }
-      const accessToken = await this.authentication.auth(request.body as ILoginRequest);
+
+      const accessToken = await this.authentication.auth(httpRequest.body as ILoginRequest);
       if (!accessToken) {
         throw new UnauthorizedError();
       }
@@ -40,16 +35,6 @@ export class LoginController implements IController {
         return unauthorized(error);
       }
       return serverError(error as Error);
-    }
-  }
-
-  private validateRequiredFields(httpRequest: IHttpRequest): void {
-    const requiredFields: Field[] = ['email', 'password'];
-
-    for (const field of requiredFields) {
-      if (httpRequest?.body[field] === undefined || httpRequest?.body[field] === null) {
-        throw new MissingParamError(field);
-      }
     }
   }
 }
